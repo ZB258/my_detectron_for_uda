@@ -213,6 +213,11 @@ Category ids in annotations are not in [1, #categories]! We'll apply a mapping f
                 try:
                     obj["category_id"] = id_map[annotation_category_id]
                 except KeyError as e:
+
+                    print(id_map)
+                    print(obj)
+                    print(annotation_category_id)
+                    
                     raise KeyError(
                         f"Encountered category_id={annotation_category_id} "
                         "but this id does not exist in 'categories' of the json file."

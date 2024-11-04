@@ -1,9 +1,18 @@
 FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 # use an older system (18.04) to avoid opencv incompatibility (issue#3524)
 
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get install -y \
-	python3-opencv ca-certificates python3-dev git wget sudo ninja-build
+ENV DEBIAN_FRONTEND=noninteractive
+# RUN apt-get update && apt-get install -y \
+# 	python3-opencv ca-certificates python3-dev git wget sudo ninja-build
+RUN apt-get update && \
+apt-get install -y python3-opencv || { echo 'python3-opencv install failed'; exit 1; } && \
+apt-get install -y ca-certificates || { echo 'ca-certificates install failed'; exit 1; } && \
+apt-get install -y python3.8 python3.8-dev python3-distutils && \
+apt-get install -y git || { echo 'git install failed'; exit 1; } && \
+apt-get install -y wget || { echo 'wget install failed'; exit 1; } && \
+apt-get install -y sudo || { echo 'sudo install failed'; exit 1; } && \
+apt-get install -y ninja-build || { echo 'ninja-build install failed'; exit 1; }
+
 RUN ln -sv /usr/bin/python3 /usr/bin/python
 
 # create a non-root user
@@ -33,7 +42,8 @@ ENV FORCE_CUDA="1"
 ARG TORCH_CUDA_ARCH_LIST="Kepler;Kepler+Tesla;Maxwell;Maxwell+Tegra;Pascal;Volta;Turing"
 ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
 
-RUN pip install --user -e detectron2_repo
+# RUN pip install --user -e detectron2_repo
+
 
 # Set a fixed model cache directory.
 ENV FVCORE_CACHE="/tmp"
